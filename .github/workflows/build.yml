@@ -1,4 +1,4 @@
-name: Build SuperLead Browser
+name: Build App
 on: [push, workflow_dispatch]
 jobs:
   build:
@@ -6,12 +6,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Extract ZIP (Automatic Search)
-        run: |
-          # আপনার রিপোজিটরিতে থাকা যেকোনো জিপ ফাইলকে এটি খুঁজে বের করবে
-          unzip -o *.zip -d .
-          # ফাইলগুলো ঠিকমতো বের হয়েছে কি না তা চেক করবে
-          ls -R
+      - name: Extract Project
+        run: unzip -o SuperLead_Final_App.zip -d .
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -19,15 +15,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v3
         with:
-          gradle-version: '8.5'
-
-      - name: Build APK
-        run: |
-          # প্রজেক্ট বিল্ড করা শুরু হবে
-          gradle assembleDebug --stacktrace
+          gradle-version: 8.5
+          arguments: assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
